@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters><parameter name="version" required="true" /></parameters>
+  <zip-file>
+    <pe-file path="R VPN.exe" product-name="R VPN" product-version="${version}.0" company-name="R PROJECT">
+      <authenticode-sign hash-algorithm="sha256" description="R VPN" description-url="https://r-project.lol/" />
+    </pe-file>
+    <pe-file path="RVPN.EngineHost.exe" product-name="R VPN" product-version="${version}.0" company-name="R PROJECT">
+      <authenticode-sign hash-algorithm="sha256" description="R VPN network engine host" description-url="https://r-project.lol/" />
+    </pe-file>
+    <pe-file path="R VPN Uninstall.exe" product-name="R VPN" product-version="${version}.0" company-name="R PROJECT">
+      <authenticode-sign hash-algorithm="sha256" description="R VPN uninstaller" description-url="https://r-project.lol/" />
+    </pe-file>
+  </zip-file>
+</artifact-configuration>

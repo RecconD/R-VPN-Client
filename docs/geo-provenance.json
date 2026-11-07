@@ -1,0 +1,14 @@
+[
+  {
+    "dataset": "geoip-ru",
+    "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/7da04853058c4a8858f339b266353fc905ef4eb4/geo/geoip/ru.json",
+    "rulesMatch": true,
+    "transform": "rules array extracted as compact JSON then GZip compressed"
+  },
+  {
+    "dataset": "geosite-category-ru",
+    "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/7da04853058c4a8858f339b266353fc905ef4eb4/geo/geosite/category-ru.json",
+    "rulesMatch": true,
+    "transform": "rules array extracted as compact JSON then GZip compressed"
+  }
+]

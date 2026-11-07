@@ -1,0 +1,41 @@
+name: Build unsigned Windows candidate
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Audit publication tree
+        shell: powershell
+        run: ./scripts/Test-PublicTree.ps1 -RunGitleaks
+      - name: Build and test without signing secrets
+        shell: powershell
+        run: ./build.ps1 -Test -Package
+      - name: Verify installer resources
+        shell: powershell
+        run: ./scripts/Test-Release.ps1 -Directory ./build
+      - name: Fetch and verify corresponding upstream source
+        shell: pwsh
+        run: ./scripts/Get-GoModuleSources.ps1
+      - name: Package corresponding source
+        shell: powershell
+        run: ./scripts/New-SourceBundle.ps1 -OutputDirectory ./build
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: windows-unsigned-candidate
+          path: |
+            build/R-VPN-Setup-*.exe
+            build/R-VPN-Windows-x64-*.zip
+            build/R-VPN-corresponding-source.zip
+            build/qa/desktop-checks.json
+            build/gitleaks*.json
+          if-no-files-found: error
+          retention-days: 14

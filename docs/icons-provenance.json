@@ -1,0 +1,20 @@
+[
+  {
+    "icon": "discord",
+    "commit": "c8a98c7099c33a8ef8461dd97263235f348e7077",
+    "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/c8a98c7099c33a8ef8461dd97263235f348e7077/icons/discord.svg",
+    "sha256": "1d364b72c9eaf1fe37d17ca88cd8fb541308dc0f3b09e2ab3b824f380b3493d5"
+  },
+  {
+    "icon": "telegram",
+    "commit": "c8a98c7099c33a8ef8461dd97263235f348e7077",
+    "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/c8a98c7099c33a8ef8461dd97263235f348e7077/icons/telegram.svg",
+    "sha256": "147fd8f8923e7e5f463fe98c0eb9913bead6b2ae59935728cda141002ec8a7c9"
+  },
+  {
+    "icon": "youtube",
+    "commit": "c8a98c7099c33a8ef8461dd97263235f348e7077",
+    "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/c8a98c7099c33a8ef8461dd97263235f348e7077/icons/youtube.svg",
+    "sha256": "5038808acbbc4e6edda16cbeb1cc6dec80e4e4ee4e227e039c41229fa222aa8c"
+  }
+]

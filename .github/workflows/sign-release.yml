@@ -1,0 +1,127 @@
+name: Sign approved Windows release
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: signpath-release
+  cancel-in-progress: false
+jobs:
+  sign:
+    if: vars.PUBLICATION_APPROVED == 'true' && vars.SIGNPATH_ACCEPTED == 'true' && vars.WINTUN_SYSTEM_LIBRARY_APPROVED == 'true' && vars.SOURCE_CORRESPONDENCE_APPROVED == 'true'
+    runs-on: windows-2022
+    environment: code-signing
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate version tag and configured approval evidence
+        id: version
+        shell: powershell
+        env:
+          ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          PROJECT_SLUG: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          POLICY_SLUG: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          WINTUN_APPROVAL_URL: ${{ vars.SIGNPATH_WINTUN_APPROVAL_URL }}
+          SOURCE_REVIEW_URL: ${{ vars.SIGNPATH_SOURCE_REVIEW_URL }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($value in @($env:ORGANIZATION_ID,$env:PROJECT_SLUG,$env:POLICY_SLUG,$env:WINTUN_APPROVAL_URL,$env:SOURCE_REVIEW_URL)) {
+            if ([string]::IsNullOrWhiteSpace($value)) { throw 'SignPath approval and project settings are incomplete.' }
+          }
+          $version = [regex]::Match((Get-Content src/AssemblyInfo.cs -Raw), 'AssemblyVersion\("(\d+\.\d+\.\d+)\.0"\)').Groups[1].Value
+          if (!$version -or $env:GITHUB_REF -cne ('refs/tags/v' + $version)) { throw 'Run this workflow on the matching reviewed version tag.' }
+          "version=$version" >> $env:GITHUB_OUTPUT
+      - name: Audit source and history
+        shell: powershell
+        run: ./scripts/Test-PublicTree.ps1 -RunGitleaks
+      - name: Build owned binaries
+        shell: powershell
+        run: ./build.ps1 -Test
+      - name: Prepare exact owned signing inputs
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory build/signing-input | Out-Null
+          Copy-Item -LiteralPath 'build/R VPN/R VPN.exe','build/R VPN/core/RVPN.EngineHost.exe','build/R VPN Uninstall.exe' -Destination build/signing-input
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        id: own-input
+        with:
+          name: owned-binaries-unsigned
+          path: build/signing-input/*.exe
+          if-no-files-found: error
+      - name: Request owned binary signing with manual approval
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: client-binaries
+          github-artifact-id: ${{ steps.own-input.outputs.artifact-id }}
+          parameters: |
+            version: "${{ steps.version.outputs.version }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: build/signed-client
+      - name: Verify signatures and build installer with signed contents
+        shell: powershell
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./scripts/Assert-Signatures.ps1 -Path 'build/signed-client/R VPN.exe','build/signed-client/RVPN.EngineHost.exe','build/signed-client/R VPN Uninstall.exe' -RequireSignTool
+          Copy-Item -LiteralPath 'build/signed-client/R VPN.exe' -Destination 'build/R VPN/R VPN.exe' -Force
+          Copy-Item -LiteralPath 'build/signed-client/RVPN.EngineHost.exe' -Destination 'build/R VPN/core/RVPN.EngineHost.exe' -Force
+          Copy-Item -LiteralPath 'build/signed-client/R VPN Uninstall.exe' -Destination 'build/R VPN Uninstall.exe' -Force
+          $archive = 'build/R-VPN-Windows-x64-' + $env:RELEASE_VERSION + '.zip'
+          ./scripts/New-Archive.ps1 -Directory 'build/R VPN' -Archive $archive -Prefix 'R VPN/'
+          ./installer/build-setup.ps1 -Archive $archive -OutputDirectory ./build
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        id: setup-input
+        with:
+          name: installer-unsigned
+          path: build/R-VPN-Setup-*.exe
+          if-no-files-found: error
+      - name: Request installer signing with manual approval
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: windows-installer
+          github-artifact-id: ${{ steps.setup-input.outputs.artifact-id }}
+          parameters: |
+            version: "${{ steps.version.outputs.version }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: build/signed-installer
+      - name: Verify outer and embedded signatures and timestamps
+        shell: powershell
+        run: |
+          Copy-Item -Path build/signed-installer/R-VPN-Setup-*.exe -Destination build -Force
+          ./scripts/Test-Release.ps1 -Directory ./build -RequireSigned | ConvertTo-Json -Depth 4 | Set-Content build/signature-verification.json
+      - name: Fetch corresponding source
+        shell: pwsh
+        run: ./scripts/Get-GoModuleSources.ps1
+      - name: Make corresponding-source bundle
+        shell: powershell
+        run: ./scripts/New-SourceBundle.ps1 -OutputDirectory ./build
+      - name: Record release hashes
+        shell: powershell
+        run: |
+          Get-ChildItem build -File | Where-Object { $_.Name -match '^R-VPN-.*\.(exe|zip)$' } | Get-FileHash -Algorithm SHA256 | ForEach-Object { $_.Hash.ToLowerInvariant() + '  ' + [IO.Path]::GetFileName($_.Path) } | Set-Content build/SHA256SUMS.txt -Encoding ASCII
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: windows-signed-release-for-review
+          path: |
+            build/R-VPN-Setup-*.exe
+            build/R-VPN-Windows-x64-*.zip
+            build/R-VPN-corresponding-source.zip
+            build/SHA256SUMS.txt
+            build/signature-verification.json
+          if-no-files-found: error
+          retention-days: 30

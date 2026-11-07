@@ -1,0 +1,6 @@
+{
+  "activationService": "https://31.77.57.217:8443/",
+  "probeUrl": "https://www.gstatic.com/generate_204",
+  "automaticUpdateChecks": false,
+  "connectionDiagnostics": false
+}

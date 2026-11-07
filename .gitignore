@@ -1,0 +1,19 @@
+# Public source repository. Never add private runtime or signing state.
+/build/
+/.cache/
+/vendor/
+/qa/
+*.pfx
+*.p12
+*.pem
+*.key
+.env
+.env.*
+*.sqlite*
+*.db
+*.log
+*.user
+*.suo
+state.json
+profile.json
+accounts.json
