@@ -73,7 +73,11 @@ if ($Test) {
     $rvQa = Join-Path $OutputDirectory 'qa'
     $rvProcess = Start-Process -FilePath (Join-Path $rvRelease 'R VPN.exe') -ArgumentList @('--qa',('"' + $rvQa + '"')) -WindowStyle Hidden -PassThru
     if (!$rvProcess.WaitForExit(60000)) { Stop-Process -Id $rvProcess.Id -Force; throw 'Desktop QA timed out.' }
-    if ($rvProcess.ExitCode -ne 0) { throw ('Desktop QA failed. Inspect ' + (Join-Path $rvQa 'desktop-checks.json')) }
+    if ($rvProcess.ExitCode -ne 0) {
+        $rvReport = Join-Path $rvQa 'desktop-checks.json'
+        if (Test-Path -LiteralPath $rvReport) { Write-Output ([IO.File]::ReadAllText($rvReport)) }
+        throw ('Desktop QA failed. Inspect ' + $rvReport)
+    }
     Write-Output ('Desktop QA passed: ' + (Join-Path $rvQa 'desktop-checks.json'))
 }
 if ($Package) {

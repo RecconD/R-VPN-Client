@@ -19,6 +19,14 @@ jobs:
       - name: Build and test without signing secrets
         shell: powershell
         run: ./build.ps1 -Test -Package
+      - name: Preserve desktop QA report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: desktop-qa-report
+          path: build/qa/desktop-checks.json
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Verify installer resources
         shell: powershell
         run: ./scripts/Test-Release.ps1 -Directory ./build
