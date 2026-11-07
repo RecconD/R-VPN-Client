@@ -22,6 +22,7 @@ if ($rvFindings.Count) { throw ('Review required (values redacted): ' + ($rvFind
 if ($RunGitleaks) {
     $rvLock = Get-Content -LiteralPath (Join-Path $rvRoot 'dependencies.lock.json') -Raw | ConvertFrom-Json
     $rvArchive = Join-Path $rvRoot '.cache/gitleaks.zip'
+    New-Item -ItemType Directory -Path (Split-Path -Parent $rvArchive) -Force | Out-Null
     if (!(Test-Path -LiteralPath $rvArchive)) { Invoke-WebRequest -UseBasicParsing -Uri $rvLock.gitleaks.url -OutFile $rvArchive }
     if ((Get-FileHash -LiteralPath $rvArchive).Hash -ne $rvLock.gitleaks.sha256) { throw 'Gitleaks checksum mismatch.' }
     $rvScanner = Join-Path $rvRoot ('.cache/gitleaks-' + [Guid]::NewGuid().ToString('N'))
