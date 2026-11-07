@@ -1,7 +1,8 @@
 # Code signing policy
 
 Status as of 2026-11-07: **proposed, not active**. R VPN has not been accepted by
-SignPath Foundation, no application has been submitted, and no R VPN-owned
+SignPath Foundation. The owner submitted the application on 2026-11-07 and
+received its acknowledgement email. Review is pending, and no R VPN-owned
 binary has a trusted Authenticode signature from this preparation.
 
 After acceptance the policy will identify the service as follows:
@@ -98,5 +99,5 @@ References checked 2026-11-07:
 - https://learn.microsoft.com/windows/apps/package-and-deploy/smartscreen-reputation
 
 Privacy policy: [PRIVACY](PRIVACY.md). This policy must also be linked under
-"Code signing policy" on https://r-project.lol/ and the download/release pages
-after the owner approves the public repository and the operator details.
+"Code signing policy" on https://r-project.lol/ and the download/release pages.
+The homepage footer links this policy and the privacy policy as of 2026-11-07.

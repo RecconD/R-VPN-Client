@@ -38,6 +38,8 @@ namespace RVpn
                 var store = new ClientStore(testFolder);
                 var desktop = new Desktop(directory, store, ClientSettings.Load(directory), true);
                 var window = desktop.Window;
+                Assert(window.Width == 1120 && window.Height == 700,
+                    "declared fixed window size is 1120x700", checks);
                 window.ShowInTaskbar = false;
                 window.Loaded += async (sender, args) =>
                 {
@@ -59,8 +61,14 @@ namespace RVpn
                             new Typeface(desktop.Get<TextBlock>("Wordmark").FontFamily, FontStyles.Normal, FontWeights.Bold, FontStretches.Normal)
                                 .TryGetGlyphTypeface(out wordmark) && wordmark.FamilyNames.Values.Contains("Manrope"),
                             "embedded Comfortaa and site Manrope wordmark resolve", checks);
+                        // Windows clamps initial HWND geometry to its maximum tracking size.
+                        // Hosted runners have a 1024x768 desktop; keep the declared-size check
+                        // above, then validate the actual OS-constrained window separately.
+                        var expectedWidth = Math.Min(1120, SystemParameters.MaximumWindowTrackWidth);
+                        var expectedHeight = Math.Min(700, SystemParameters.MaximumWindowTrackHeight);
                         Assert(window.ResizeMode == ResizeMode.CanMinimize && window.FindName("MaxButton") == null &&
-                            window.ActualWidth == 1120 && window.ActualHeight == 700,
+                            Math.Abs(window.ActualWidth - expectedWidth) < 0.5 &&
+                            Math.Abs(window.ActualHeight - expectedHeight) < 0.5,
                             "wide fixed size with minimize and close (requested " + window.Width + "x" + window.Height +
                             "; actual " + window.ActualWidth + "x" + window.ActualHeight +
                             "; virtual screen " + SystemParameters.VirtualScreenWidth + "x" + SystemParameters.VirtualScreenHeight +

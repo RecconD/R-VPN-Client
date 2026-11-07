@@ -1,13 +1,16 @@
-# SignPath Foundation application — NOT SUBMITTED
+# SignPath Foundation application — review pending
 
-Prepare the final form at https://signpath.org/apply.html only after the owner
-approves source publication and the repository is public and build-verifiable.
-The owner performs account login, identity confirmation and MFA setup.
+The owner submitted the form at https://signpath.org/apply.html on 2026-11-07.
+The page displayed "Form submitted" and the owner received the Foundation's
+"Open Source Project Submitted" acknowledgement email. This confirms receipt,
+not acceptance. The owner performs account login, identity confirmation and
+MFA setup. No signing account approval or certificate is claimed.
 
 Project: R VPN for Windows
 Website/download page: https://r-project.lol/
 Repository: https://github.com/RecconD/R-VPN-Client
-Public release/workflow URL: awaiting first public build
+Public workflow URL: https://github.com/RecconD/R-VPN-Client/actions
+Build status: see the individual public workflow runs; no signed release
 License: GPL-3.0-or-later for own client code, approved by owner on 2026-11-07
 Contact: reccondesign@gmail.com (supplied by owner, email verification pending)
 Authors/reviewers/approvers: https://github.com/RecconD (MFA setup to be confirmed)
@@ -55,5 +58,5 @@ reputation, source provenance or privacy requirements needed for consideration.
 - Approved privacy policy with service operator contact and retention details
 - Existing download history and other truthful project reputation evidence
 
-This file is not a sent message, a completed form or an approval. It contains
-no API token, user activation code or server credential.
+This file records the application scope and current status, not an approval.
+It contains no API token, user activation code or server credential.

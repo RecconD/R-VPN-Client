@@ -14,6 +14,11 @@ refuses a pre-existing application output folder. Use `-OutputDirectory` to
 build into a separate folder. `-Offline` uses already downloaded archives but
 still verifies their checksums and extracts fresh toolchain directories.
 
+Desktop QA checks the declared 1120x700 window size before showing it, then
+checks its actual size against Windows' maximum tracking dimensions. Hosted
+runners have a smaller virtual desktop and may clamp the native window; local
+visual review at the full 1120x700 size remains part of release verification.
+
 Roslyn, .NET reference assemblies, sing-box and Wintun are pinned by version
 and SHA-256. The runtime verifies the exact upstream executable and DLL hashes
 again before starting the engine. Do not modify or sign these upstream files.

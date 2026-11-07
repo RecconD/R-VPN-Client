@@ -15,8 +15,8 @@ acceptance by SignPath Foundation.
 | Own source/binaries only for signing | XML scopes include four owned binaries only. Upstream engine/drivers are never re-signed. The ZIP and EXE installer are assembled after inner-file signing. |
 | User privacy and system changes | Privacy text is embedded in setup, optional update checks and result diagnostics default off with installer choices. Network configuration changes are disclosed. The owner supplied reccondesign@gmail.com as contact. Server/provider retention is not represented as independently audited. |
 | Uninstallation | Existing branded uninstaller is built from source and offers local profile cleanup. |
-| Code signing policy and roles | docs/CODE_SIGNING.md assigns maintainer/reviewer/approver roles to RecconD. SignPath account and MFA configuration remain pending. The project homepage must link the policy before completing the application. |
-| Verifiable automated builds and manual approval | GitHub-hosted workflows, pinned actions and dependencies, two manual SignPath approvals and fail-closed signature checks prepared. No public CI run has occurred. |
+| Code signing policy and roles | docs/CODE_SIGNING.md assigns maintainer/reviewer/approver roles to RecconD. The homepage links signing and privacy policies. The owner submitted the application on 2026-11-07 and received an acknowledgement. Approval, SignPath account and MFA configuration remain pending. |
+| Verifiable automated builds and manual approval | Public GitHub-hosted builds and logs are available in Actions. Check the result for the exact release commit before distribution. Pinned actions, two manual SignPath approvals and fail-closed signature checks are prepared. No trusted signature is claimed yet. |
 
 ## Exact Wintun question for the application
 
