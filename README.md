@@ -1,7 +1,8 @@
 # R VPN for Windows
 
-Public source candidate, version 0.1.19. This project has not been accepted by
-SignPath Foundation. Its binaries are currently unsigned.
+Public source candidate, version 0.1.19. SignPath Foundation declined the
+application on 2026-11-07 because the project has not yet established sufficient
+public recognition. Its binaries remain unsigned and signing is disabled.
 
 R VPN is a Windows 10/11 x64 desktop VPN client built with C# and WPF on .NET
 Framework 4.8. It connects to an R VPN service with a user-supplied activation

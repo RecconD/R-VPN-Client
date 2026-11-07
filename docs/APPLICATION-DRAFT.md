@@ -1,10 +1,17 @@
-# SignPath Foundation application — review pending
+# SignPath Foundation application — declined for now
 
 The owner submitted the form at https://signpath.org/apply.html on 2026-11-07.
 The page displayed "Form submitted" and the owner received the Foundation's
 "Open Source Project Submitted" acknowledgement email. This confirms receipt,
 not acceptance. The owner performs account login, identity confirmation and
 MFA setup. No signing account approval or certificate is claimed.
+
+On 2026-11-07 the owner supplied the Foundation's decision email. The
+application was declined because the project does not yet show sufficient
+public trust, visibility and sustained engagement. The Foundation invited a
+later application after broader recognition. It did not set a guaranteed
+number of stars, users or months that would ensure acceptance. Signing stays
+disabled. No reply or second application has been sent by this tooling.
 
 Project: R VPN for Windows
 Website/download page: https://r-project.lol/

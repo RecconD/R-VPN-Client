@@ -1,9 +1,11 @@
 # Code signing policy
 
-Status as of 2026-11-07: **proposed, not active**. R VPN has not been accepted by
-SignPath Foundation. The owner submitted the application on 2026-11-07 and
-received its acknowledgement email. Review is pending, and no R VPN-owned
-binary has a trusted Authenticode signature from this preparation.
+Status as of 2026-11-07: **inactive; Foundation application declined**.
+The owner submitted the application and received the decision on 2026-11-07.
+SignPath cited insufficient public recognition and independent adoption
+signals. It invited a later application after broader recognition. No
+acceptance or dependency exception was granted. Signing remains disabled and
+no R VPN-owned binary has a trusted Authenticode signature from this preparation.
 
 After acceptance the policy will identify the service as follows:
 "Free code signing provided by [SignPath.io](https://about.signpath.io/),
