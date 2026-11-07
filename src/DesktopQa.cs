@@ -60,7 +60,11 @@ namespace RVpn
                                 .TryGetGlyphTypeface(out wordmark) && wordmark.FamilyNames.Values.Contains("Manrope"),
                             "embedded Comfortaa and site Manrope wordmark resolve", checks);
                         Assert(window.ResizeMode == ResizeMode.CanMinimize && window.FindName("MaxButton") == null &&
-                            window.ActualWidth == 1120 && window.ActualHeight == 700, "wide fixed size with minimize and close", checks);
+                            window.ActualWidth == 1120 && window.ActualHeight == 700,
+                            "wide fixed size with minimize and close (requested " + window.Width + "x" + window.Height +
+                            "; actual " + window.ActualWidth + "x" + window.ActualHeight +
+                            "; virtual screen " + SystemParameters.VirtualScreenWidth + "x" + SystemParameters.VirtualScreenHeight +
+                            "; resize " + window.ResizeMode + ")", checks);
                         var screenshot = Art.WindowScreenshot((Border)window.Content);
                         var corner = new byte[4];
                         var center = new byte[4];
